@@ -1,0 +1,64 @@
+def gather(inp):
+    return gather_help(inp,[],[])
+
+class my_dict(dict):
+    def init(self):
+        self = dict()
+
+    def add(self, key, value):
+        self[key] = value
+
+def gather_help (inp, temp, ans):
+    for i in range(len(inp)):
+        txt = inp[i]
+        rem = inp[i + 1:]
+        temp.append(txt)
+        ans.append(tuple(temp))
+        gather_help (rem, temp, ans)
+        temp.pop()
+    return ans
+
+count = 0;
+goodieDict = my_dict()
+file = open("sam_ip(anu).txt","r")
+for x in file:
+    count+=1
+    if count>=5:
+        (key, val) = x.split(": ")
+        if val[-1]=="\n":
+            val = val.rstrip(val[-1])
+        goodieDict[(key)] = val;
+    elif count==1 :
+        (numEmpTxt, numEmp) = x.split(": ")
+
+print(goodieDict)
+priceList = list(goodieDict.values())
+for i in range(0, len(priceList)):
+    priceList[i] = int(priceList[i])
+
+dict_obj = my_dict()
+a = gather(priceList)
+for i in a:
+    if(len(i) == (int(numEmp))):
+        nt = sorted(i)
+        diffValue = nt[(int(numEmp)-1)] - nt[0]
+        dict_obj.key = diffValue
+        dict_obj.value = nt
+        dict_obj.add(dict_obj.key, dict_obj.value)
+
+keyList = dict_obj.keys()
+sortedKeyList = sorted(keyList)
+
+finalPriceList = dict_obj.get(sortedKeyList[0])
+
+f = open("sam_op(anu).txt", "w")
+f.write("Here the goodies that are selected for distribution are:\n")
+for prices in finalPriceList:
+    for key in goodieDict.keys():
+        if prices == int(goodieDict[key]):
+            f.write(key+": "+str(prices)+"\n")
+f.write("\n")
+
+diff_Price = finalPriceList[(int(numEmp)-1)] - finalPriceList[0]
+f.write("And the difference between the chosen goodie with highest price and the lowest price is "+str(diff_Price))
+f.close()
